@@ -1,0 +1,30 @@
+---
+- hosts: web
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: Upgrade all packages on servers
+      apt:
+        upgrade: yes
+
+    - name: Install packages
+      apt: pkg={{ item }}
+      with_items:
+          - nodejs
+          - npm
+
+    - name: Update Node
+      shell:
+        cmd: npm install -g n && n stable
+
+    - name: Install Yarn
+      shell:
+        cmd: npm install -g yarn
+
+    - name: Install project dependencies
+      command: chdir=/vagrant/OpenBlog yarn install
+
+    - name: Build Project     
+      command: chdir=/vagrant/OpenBlog yarn build
+
