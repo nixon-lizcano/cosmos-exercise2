@@ -1,0 +1,24 @@
+[Unit]
+Description=hello_env.js - making your environment variables rad
+Documentation=https://example.com
+After=network.target
+
+[Service]
+Environment=PORT=65000
+Environment=NODE_ENV=dev
+Environment=DB_HOST=127.0.0.1
+Environment=DB_PORT=5432
+Environment=DB_USER=postgres
+Environment=DB_PASS=postgres
+Environment=REDIS_HOST=127.0.0.1:q
+Environment=REDIS_PORT=
+Environment=REDIS_PASS=sOmE_sEcUrE_pAsS
+Environment=CORS_ORIGIN=http://localhost:3000
+Environment=SESSION_SECRET=secret
+Type=simple
+User=vagrant
+ExecStart=/usr/bin/node /vagrant/OpenBlog/packages/api/build/app
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

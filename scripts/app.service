@@ -1,0 +1,14 @@
+[Unit]
+Description=hello_env.js - making your environment variables rad
+Documentation=https://example.com
+After=network.target
+
+[Service]
+Environment=PORT=3000
+Type=simple
+User=vagrant
+ExecStart=(cd /vagrant/OpenBlog/packages/api/build/app && exec /usr/bin/yarn start) 
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

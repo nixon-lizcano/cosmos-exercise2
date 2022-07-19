@@ -13,6 +13,7 @@
       with_items:
           - nodejs
           - npm
+          - nginx
 
     - name: Update Node
       shell:
@@ -25,6 +26,32 @@
     - name: Install project dependencies
       command: chdir=/vagrant/OpenBlog yarn install
 
-    - name: Build Project     
-      command: chdir=/vagrant/OpenBlog yarn build
+    - name: Install extra dependencies (codebase err)
+      command: chdir=/vagrant/OpenBlog/packages/app yarn add sharp
 
+    - name: Build Project     
+      command: chdir=/vagrant/OpenBlog/packages/api yarn build
+
+    - name: Create Deamons
+      copy: 
+          src: "./scripts/"
+          dest: "/etc/systemd/system/"
+
+    - name: Start API Daemon
+      service:
+          enabled: yes
+          state: started
+          daemon_reload: yes
+          name: api.service
+
+    - name: Enable APP Daemon
+      service:
+          enabled: yes
+          state: started
+          daemon_reload: yes
+          name: app.service
+
+    - name: start nginx 
+      service:
+          name: nginx
+          state: started
