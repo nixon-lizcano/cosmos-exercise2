@@ -14,6 +14,7 @@
           - nodejs
           - npm
           - nginx
+          - git
 
     - name: Update Node
       shell:
@@ -23,14 +24,21 @@
       shell:
         cmd: npm install -g yarn
 
+    - name: Clone repo
+      git:
+        repo: https://github.com/Totoratsu/OpenBlog.git
+        dest: /opt/OpenBlog
+        clone: yes
+        force: yes
+
     - name: Install project dependencies
-      command: chdir=/vagrant/OpenBlog yarn install
+      command: chdir=/opt/OpenBlog yarn install
 
     - name: Install extra dependencies (codebase err)
-      command: chdir=/vagrant/OpenBlog/packages/app yarn add sharp
+      command: chdir=/opt/OpenBlog/packages/app yarn add sharp
 
     - name: Build Project     
-      command: chdir=/vagrant/OpenBlog/packages/api yarn build
+      command: chdir=/opt/OpenBlog/packages/api yarn build
 
     - name: Create Deamons
       copy: 

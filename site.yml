@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: Upgrade all packages on servers
+      apt:
+        upgrade: yes
+
+    - name: Ensure NTP is installed
+      apt: name=ntp state=present
+
+    - name: Sincronize time
+      service:
+        name: ntp.service
+        state: started
+        enabled: yes
+        daemon_reload: yes
