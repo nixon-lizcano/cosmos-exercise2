@@ -8,3 +8,22 @@
 - site.yml -> Main playbook
 - db.yml -> Postgres server's playbook
 - web.yml -> Node API & APP's playbook
+
+## Configuration
+
+### Env Config
+
+Encrypt psswd file.
+```shell
+ansible-vault encrypt ./ansible/group_vars/secret.yml --vault-password-file ./vault.key
+```
+
+Edit psswd file without decrypting.
+```
+ansible-vault edit ./ansible/group_vars/secret.yml --vault-password-file ./vault.key
+```
+
+Decrypt psswd file.
+```shell
+ansible-vault decrypt ./ansible/group_vars/secret.yml --vault-password-file ./vault.key
+```
