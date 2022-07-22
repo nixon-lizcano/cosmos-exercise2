@@ -7,3 +7,5 @@
 
 ###	Ansible
 *.retry
+
+vault.key

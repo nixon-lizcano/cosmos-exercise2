@@ -4,17 +4,21 @@
   become_method: sudo
 
   tasks:
-    - name: Upgrade all packages on servers
-      apt:
-        upgrade: yes
+    - name: Include variables file
+      ansible.builtin.include_vars:
+        dir: group_vars
+        ignore_files:
+          - 'secret.example.yml'
+        extensions:
+          - 'yml'
 
     - name: Install packages
       apt: pkg={{ item }}
       with_items:
-          - nodejs
-          - npm
-          - nginx
-          - git
+        - nodejs
+        - npm
+        - nginx
+        - git
 
     - name: Update Node
       shell:
@@ -42,24 +46,29 @@
 
     - name: Create Deamons
       copy: 
-          src: "./scripts/"
-          dest: "/etc/systemd/system/"
+        src: "./../scripts/"
+        dest: "/etc/systemd/system/"
 
     - name: Start API Daemon
       service:
-          enabled: yes
-          state: started
-          daemon_reload: yes
-          name: api.service
+        enabled: yes
+        state: started
+        daemon_reload: yes
+        name: api.service
+      environment:
+        DB_PASS: "{{ DB_PASS }}"
+        DB_USER: "{{ DB_USER }}"
+        SESSION_SECRET: "{{ SESSION_SECRET }}"
+        DB_HOST: db
 
     - name: Enable APP Daemon
       service:
-          enabled: yes
-          state: started
-          daemon_reload: yes
-          name: app.service
+        enabled: yes
+        state: started
+        daemon_reload: yes
+        name: app.service
 
     - name: start nginx 
       service:
-          name: nginx
-          state: started
+        name: nginx
+        state: started
