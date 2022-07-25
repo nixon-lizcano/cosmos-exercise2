@@ -3,6 +3,12 @@
   become: yes
   become_method: sudo
 
+  roles:
+    - nodejs
+
+  vars:
+    nfs_ip: 192.168.56.13
+
   tasks:
     - name: Include variables file
       ansible.builtin.include_vars:
@@ -15,58 +21,57 @@
     - name: Install packages
       apt: pkg={{ item }}
       with_items:
-        - nodejs
-        - npm
         - nginx
-        - git
+        - nfs-common
 
-    - name: Update Node
-      shell:
-        cmd: npm install -g n && n stable
+    - name: Create NFS directory
+      file:
+        path: /mnt/nfs_clientshare
+        state: directory        
+        owner: vagrant
+        group: vagrant
+        mode: '0775'
 
-    - name: Install Yarn
-      shell:
-        cmd: npm install -g yarn
+    - name: Mount NFS directory
+      ansible.posix.mount:
+        src: "{{ nfs_ip }}:/mnt/nfs_share"
+        path: /mnt/nfs_clientshare
+        opts: rw,sync,hard
+        state: mounted
+        fstype: nfs
 
-    - name: Clone repo
-      git:
-        repo: https://github.com/Totoratsu/OpenBlog.git
-        dest: /opt/OpenBlog
-        clone: yes
-        force: yes
-
-    - name: Install project dependencies
-      command: chdir=/opt/OpenBlog yarn install
-
-    - name: Install extra dependencies (codebase err)
-      command: chdir=/opt/OpenBlog/packages/app yarn add sharp
-
-    - name: Build Project     
-      command: chdir=/opt/OpenBlog/packages/api yarn build
-
-    - name: Create Deamons
-      copy: 
-        src: "./../scripts/"
-        dest: "/etc/systemd/system/"
-
-    - name: Start API Daemon
-      service:
-        enabled: yes
-        state: started
-        daemon_reload: yes
-        name: api.service
-      environment:
-        DB_PASS: "{{ DB_PASS }}"
-        DB_USER: "{{ DB_USER }}"
-        SESSION_SECRET: "{{ SESSION_SECRET }}"
-        DB_HOST: db
-
-    - name: Enable APP Daemon
-      service:
-        enabled: yes
-        state: started
-        daemon_reload: yes
-        name: app.service
+#    - name: Install project dependencies
+#      command: chdir=/opt/OpenBlog yarn install
+#
+#    - name: Install extra dependencies (codebase err)
+#      command: chdir=/opt/OpenBlog/packages/app yarn add sharp
+#
+#    - name: Build Project     
+#      command: chdir=/opt/OpenBlog/packages/api yarn build
+#
+#    - name: Create Deamons
+#      copy: 
+#        src: "./../scripts/"
+#        dest: "/etc/systemd/system/"
+#
+#    - name: Start API Daemon
+#      service:
+#        enabled: yes
+#        state: started
+#        daemon_reload: yes
+#        name: api.service
+#      environment:
+#        DB_PASS: "{{ DB_PASS }}"
+#        DB_USER: "{{ DB_USER }}"
+#        SESSION_SECRET: "{{ SESSION_SECRET }}"
+#        DB_HOST: db
+#
+#    - name: Enable APP Daemon
+#      service:
+#        enabled: yes
+#        state: started
+#        daemon_reload: yes
+#        name: app.service
 
     - name: start nginx 
       service:

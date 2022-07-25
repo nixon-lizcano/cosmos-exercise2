@@ -1,0 +1,68 @@
+---
+- hosts: nfs
+  become: yes
+  become_method: sudo
+
+  roles:
+    - nodejs
+
+  tasks:
+    - name: Install packages
+      apt: pkg={{ item }}
+      with_items:
+        - nfs-kernel-server
+        - git
+
+    - name: Create NFS directory
+      file:
+        path: /mnt/nfs_share
+        state: directory
+        group: vagrant
+        owner: vagrant
+        mode: '0775'
+
+    - name: Copy NFS config file
+      copy: 
+        src: "./../scripts/exports"
+        dest: "/etc/exports"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Clone repo
+      git:
+        repo: https://github.com/Totoratsu/OpenBlog.git
+        dest: /mnt/nfs_share/OpenBlog
+        clone: yes
+        force: yes
+
+    - name: Export shared directory
+      shell: exportfs -a
+
+    - name: Reload NFS Daemon
+      service:
+        name: nfs-kernel-server
+        state: reloaded
+        enabled: yes
+
+    - name: NFS firewall config
+      ufw:
+        state: enabled
+        rule: allow
+        port: 2049 # tcp nfsv4 port
+        log: yes
+        src: '{{ item }}'
+      with_items:
+        - 192.168.56.0/24
+        - 10.0.2.15/24
+
+    - name: SSH firewall config
+      ufw:
+        state: enabled
+        rule: allow
+        name: OpenSSH
+        log: yes
+        src: '{{ item }}'
+      with_items:
+        - 192.168.56.0/24
+        - 10.0.2.15/24

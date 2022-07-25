@@ -9,6 +9,10 @@
 - db.yml -> Postgres server's playbook
 - web.yml -> Node API & APP's playbook
 
+### Ansible dependencies
+- ansible.posix
+- community.general
+
 ## Configuration
 
 ### Env Config
