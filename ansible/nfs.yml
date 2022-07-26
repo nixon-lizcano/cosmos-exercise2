@@ -1,7 +1,6 @@
 ---
 - hosts: nfs
   become: yes
-  become_method: sudo
 
   roles:
     - nodejs
@@ -71,10 +70,10 @@
       community.general.yarn:
         path: /mnt/nfs_share/OpenBlog
 
-    - name: Install extra dependencies (codebase err)
-      community.general.yarn:
-        path: /mnt/nfs_share/OpenBlog/packages/app
-        name: sharp
+#    - name: Install extra dependencies (codebase err)
+#      community.general.yarn:
+#        path: /mnt/nfs_share/OpenBlog/packages/app
+#        name: sharp
 
     - name: Build Project     
       command: chdir=/mnt/nfs_share/OpenBlog/packages/api yarn build

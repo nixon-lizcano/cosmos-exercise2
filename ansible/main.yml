@@ -1,25 +1,25 @@
 ---
 - hosts: all
   become: yes
-  become_method: sudo
-
-  pre_tasks:
-    - name: Update apt cache if needed
-      apt:
-        update_cache: true
-        cache_valid_time: 3600
 
   tasks:
+    - name: IPv6 bugfix
+      ansible.builtin.replace:
+        path: /etc/gai.conf
+        regexp: '#precedence ::ffff:0:0\/96  100'
+        replace: 'precedence ::ffff:0:0/96  100'
+
     - name: Upgrade all packages on servers
       apt:
         upgrade: yes
 
-    - name: Ensure NTP is installed
-      apt: name=ntp state=present
-
-    - name: Sincronize time
+    - name: Ensure chrony (for time synchronization) is installed.
+      apt:
+        name: chrony
+        state: present
+        update_cache: yes
+    - name: Ensure chrony is running
       service:
-        name: ntp.service
+        name: chronyd
         state: started
         enabled: yes
-        daemon_reload: yes
