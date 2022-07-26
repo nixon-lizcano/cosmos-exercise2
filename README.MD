@@ -15,6 +15,12 @@
 
 ## Configuration
 
+## SSH Config
+
+```
+ssh-keygen -t rsa -b 4096 -N "" -C "pkey" -f pkey
+```
+
 ### Env Config
 
 Encrypt psswd file.

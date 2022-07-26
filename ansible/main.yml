@@ -3,6 +3,12 @@
   become: yes
 
   tasks:
+    - name: Install ssh-key for {{ ansible_facts['user_id'] }} in {{ ansible_play_hosts_all }}
+      authorized_key:
+        user: "{{ ansible_ssh_user }}"
+        state: present
+        key: "{{ lookup('file', '../pkey.pub') }}"
+
     - name: IPv6 bugfix
       ansible.builtin.replace:
         path: /etc/gai.conf

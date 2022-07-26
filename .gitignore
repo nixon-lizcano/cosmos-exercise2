@@ -9,3 +9,5 @@
 *.retry
 
 vault.key
+*.pub
+pkey
