@@ -40,15 +40,6 @@
         state: mounted
         fstype: nfs
 
-#    - name: Install project dependencies
-#      command: chdir=/opt/OpenBlog yarn install
-#
-#    - name: Install extra dependencies (codebase err)
-#      command: chdir=/opt/OpenBlog/packages/app yarn add sharp
-#
-#    - name: Build Project     
-#      command: chdir=/opt/OpenBlog/packages/api yarn build
-#
 #    - name: Create Deamons
 #      copy: 
 #        src: "./../scripts/"

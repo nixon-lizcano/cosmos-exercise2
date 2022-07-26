@@ -66,3 +66,15 @@
       with_items:
         - 192.168.56.0/24
         - 10.0.2.15/24
+
+    - name: Install project dependencies
+      community.general.yarn:
+        path: /mnt/nfs_share/OpenBlog
+
+    - name: Install extra dependencies (codebase err)
+      community.general.yarn:
+        path: /mnt/nfs_share/OpenBlog/packages/app
+        name: sharp
+
+    - name: Build Project     
+      command: chdir=/mnt/nfs_share/OpenBlog/packages/api yarn build

@@ -16,17 +16,17 @@ Vagrant.configure("2") do |config|
     ansible.inventory_path = "ansible/host.ini"
   end
 
-#  config.vm.define "db" do |db|
-#    db.vm.hostname = "dbserver"
-#    db.vm.network "private_network", ip: "192.168.56.11", hostname: true
-#
-#    db.vm.provision "ansible" do |ansible|
-#      ansible.verbose = "v"
-#      ansible.playbook = "ansible/db.yml"
-#      ansible.vault_password_file = "vault.key"
-#      ansible.inventory_path = "ansible/host.ini"
-#    end
-#  end
+  config.vm.define "db" do |db|
+    db.vm.hostname = "dbserver"
+    db.vm.network "private_network", ip: "192.168.56.11", hostname: true
+
+    db.vm.provision "ansible" do |ansible|
+      ansible.verbose = "v"
+      ansible.playbook = "ansible/db.yml"
+      ansible.vault_password_file = "vault.key"
+      ansible.inventory_path = "ansible/host.ini"
+    end
+  end
 
   config.vm.define "nfs" do |nfs|
     nfs.vm.hostname = "nfs"
@@ -52,15 +52,15 @@ Vagrant.configure("2") do |config|
     end
   end
 
-#  config.vm.define "web2" do |web|
-#    web.vm.hostname = "webserver2"
-#    web.vm.network "private_network", ip: "192.168.56.12", hostname: true
-#
-#    web.vm.provision "ansible" do |ansible|
-#      ansible.verbose = "v"
-#      ansible.playbook = "ansible/web.yml"
-#      ansible.vault_password_file = "vault.key"
-#      ansible.inventory_path = "ansible/host.ini"
-#    end
-#  end
+  config.vm.define "web2" do |web|
+    web.vm.hostname = "webserver2"
+    web.vm.network "private_network", ip: "192.168.56.12", hostname: true
+
+    web.vm.provision "ansible" do |ansible|
+      ansible.verbose = "v"
+      ansible.playbook = "ansible/web.yml"
+      ansible.vault_password_file = "vault.key"
+      ansible.inventory_path = "ansible/host.ini"
+    end
+  end
 end
